@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function CityEdit() {
-    const { id } = useParams(); // Pega o ID da URL
+    const { id } = useParams(); 
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     
@@ -15,7 +15,7 @@ export default function CityEdit() {
         category: 'Natureza'
     });
 
-    // Ao abrir a tela, busca os dados atuais da cidade
+   
     useEffect(() => {
         axios.get(`/api/cities/${id}`).then((response) => {
             const city = response.data.data;
@@ -37,7 +37,7 @@ export default function CityEdit() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            // Envia a atualização (PUT)
+           
             await axios.put(`/api/cities/${id}`, formData);
             alert('Cidade atualizada com sucesso!');
             navigate('/'); 

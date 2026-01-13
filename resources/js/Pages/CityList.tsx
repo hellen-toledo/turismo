@@ -1,9 +1,9 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import { Pencil, Trash2, MapPin, Plus, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../components/ThemeProvider'; 
+import { Link, router } from '@inertiajs/react';
 
 interface City {
     id: number;
@@ -19,8 +19,8 @@ const fetchCities = async () => {
 
 export default function CityList() {
     const queryClient = useQueryClient();
-   const { theme, setTheme } = useTheme();
-const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
+    const { theme, setTheme } = useTheme();
+    const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
 
     const { data: cities, isLoading, isError } = useQuery<City[]>({
         queryKey: ['cities'],
@@ -47,10 +47,9 @@ const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
     if (isError) return <div className="min-h-screen flex items-center justify-center dark:bg-[#09090b] text-red-500 bg-gray-50">Erro ao carregar.</div>;
 
     return (
-        // O truque está aqui: bg-gray-50 (Claro) e dark:bg-[#09090b] (Escuro)
         <div className="min-h-screen transition-colors duration-300 bg-gray-50 text-gray-900 dark:bg-[#09090b] dark:text-white font-sans">
             
-            {/* --- NAVEGAÇÃO --- */}
+           
             <nav className="border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-black/50 backdrop-blur-md sticky top-0 z-50 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                     <div className="text-xl font-bold tracking-tight">
@@ -58,14 +57,14 @@ const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
                     </div>
                     
                     <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-600 dark:text-zinc-400">
-                        <Link to="/" className="hover:text-black dark:hover:text-white transition-colors">Home</Link>
-                        <span className="cursor-pointer hover:text-black dark:hover:text-white transition-colors">Eventos</span>
+                        <Link href="/" className="hover:text-black dark:hover:text-white transition-colors">Home</Link>
+                        <Link href="/admin/events" className="cursor-pointer hover:text-black dark:hover:text-white transition-colors">Eventos</Link>
                         <span className="cursor-pointer hover:text-black dark:hover:text-white transition-colors">Guia</span>
                         <span className="text-black dark:text-white border-b-2 border-green-500 pb-1">Cidades</span>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        {/* BOTÃO DE TROCAR TEMA */}
+                        
                         <button 
                             onClick={toggleTheme}
                             className="p-2 rounded-full bg-gray-200 text-gray-800 dark:bg-zinc-800 dark:text-yellow-400 hover:scale-110 transition-transform"
@@ -74,7 +73,17 @@ const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
                             {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
 
-                        <Link to="/admin/create" className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full text-xs font-bold transition-all shadow-md">
+                        
+                        <Link 
+                            href="/logout" 
+                            method="post" 
+                            as="button" 
+                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold transition shadow-md text-sm"
+                        >
+                            Sair
+                        </Link>
+
+                        <Link href="/admin/create" className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full text-xs font-bold transition-all shadow-md">
                             <Plus size={16} />
                             NOVA CIDADE
                         </Link>
@@ -82,7 +91,7 @@ const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
                 </div>
             </nav>
 
-            {/* --- HERO SECTION --- */}
+           
             <header className="text-center py-20 px-4">
                 <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight text-gray-900 dark:text-white transition-colors">
                     Cidades
@@ -92,7 +101,6 @@ const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
                 </p>
             </header>
 
-            {/* --- GRADE DE CARDS --- */}
             <main className="max-w-7xl mx-auto px-6 pb-24">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {cities?.map((city) => (
@@ -104,7 +112,6 @@ const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                             />
 
-                            {/* Gradiente do Texto: Branco no Dark, Suave no Light */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90 dark:opacity-80 transition-opacity" />
 
                             <div className="absolute bottom-0 left-0 w-full p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
@@ -120,10 +127,9 @@ const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
                                 </p>
                             </div>
 
-                            {/* --- BOTÕES DE ADMIN --- */}
                             <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0 z-20">
                                 <Link 
-                                    to={`/admin/edit/${city.id}`}
+                                    href={`/admin/edit/${city.id}`}
                                     className="bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white hover:text-black transition-all border border-white/30"
                                     title="Editar"
                                 >
@@ -139,7 +145,7 @@ const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
                                 </button>
                             </div>
 
-                            <Link to={`/cities/${city.id}`} className="absolute inset-0 z-10" />
+                            <Link href={`/cities/${city.id}`} className="absolute inset-0 z-10" />
                         </div>
                     ))}
                 </div>
